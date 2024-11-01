@@ -10,8 +10,8 @@ class DatabaseConnector():
 
      def read_db_creds(self):
          with open(self.creds, 'r') as stream:
-             creds = yaml.safe_load(stream)
-         return creds   
+             loaded_creds = yaml.safe_load(stream)
+         return loaded_creds   
 
      def init_db_engine(self, conn_creds):
          conn_creds = self.read_db_creds()  
@@ -32,8 +32,6 @@ class DatabaseConnector():
          engine.connect()
          inspector = inspect(engine)
          return inspector.get_table_names()
-     
-
      
      def upload_to_db(self, db_creds, df, table_name):
          db_creds = self.read_db_creds()
