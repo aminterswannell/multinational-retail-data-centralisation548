@@ -13,21 +13,21 @@ class DatabaseConnector():
              loaded_creds = yaml.safe_load(stream)
          return loaded_creds   
 
-     def init_db_engine(self, conn_creds):
-         conn_creds = self.read_db_creds()  
-         host = conn_creds['RDS_HOST']
-         username = conn_creds['RDS_USER']
-         password = conn_creds['RDS_PASSWORD']
-         database = conn_creds['RDS_DATABASE']
-         port = conn_creds['RDS_PORT']
-         db_conn_url = f"{'postgresql'}://{username}:{password}@{host}:{port}/{database}"
+     def init_db_engine(self, connection_creds):
+         connection_creds = self.read_db_creds()  
+         host = connection_creds['RDS_HOST']
+         username = connection_creds['RDS_USER']
+         password = connection_creds['RDS_PASSWORD']
+         database = connection_creds['RDS_DATABASE']
+         port = connection_creds['RDS_PORT']
+         db_connection_url = f"{'postgresql'}://{username}:{password}@{host}:{port}/{database}"
 
-         engine = create_engine(db_conn_url)
+         engine = create_engine(db_connection_url)
          return engine
      
      def list_db_tables(self, engine):
-         db_conn_creds = self.read_db_creds()
-         engine = create_engine(db_conn_creds)
+         db_connection_creds = self.read_db_creds()
+         engine = create_engine(db_connection_creds)
          #engine = self.init_db_engine()
          engine.connect()
          inspector = inspect(engine)
