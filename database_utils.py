@@ -1,6 +1,6 @@
 import yaml
 from sqlalchemy import create_engine, inspect
-import psycopg2
+from psycopg2 import connect
 
 
 class DatabaseConnector():
@@ -14,7 +14,7 @@ class DatabaseConnector():
          return loaded_creds   
 
      def init_db_engine(self, connection_creds):
-         connection_creds = self.read_db_creds()  
+         connection_creds = self.read_db_creds()
          host = connection_creds['RDS_HOST']
          username = connection_creds['RDS_USER']
          password = connection_creds['RDS_PASSWORD']
@@ -26,16 +26,13 @@ class DatabaseConnector():
          return engine
      
      def list_db_tables(self, engine):
-         db_connection_creds = self.read_db_creds()
-         engine = create_engine(db_connection_creds)
-         #engine = self.init_db_engine()
          engine.connect()
          inspector = inspect(engine)
          return inspector.get_table_names()
      
      def upload_to_db(self, db_creds, df, table_name):
          db_creds = self.read_db_creds()
-         local_engine = create_engine(f"postgresql+psycopg2://{db_creds['USER']}:{db_creds['PASSWORD']}@{db_creds['HOST']}:{db_creds['PORT']}/{db_creds['DATABASE']}")
+         local_engine = create_engine(f"postgresql+psycopg2://{db_creds['RDS_USER']}:{db_creds['RDS_PASSWORD']}@{db_creds['RDS_HOST']}:{db_creds['RDS_PORT']}/{db_creds['RDS_DATABASE']}")
          local_engine.connect()
          df.to_sql(table_name, local_engine, if_exists='replace')
 

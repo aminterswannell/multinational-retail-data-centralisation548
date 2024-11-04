@@ -36,10 +36,11 @@ desination_extractor = DataExtractor('sales_data_db_creds.yaml')
 
 table_name = source_connector.list_db_tables(source_db_connection)[2] 
 print(table_name)
-user_data_df = source_extractor.read_rds_table(table_name)
+user_data_df = source_extractor.read_rds_table(table_name, engine=source_db_connection)
 
 clean = DataCleaning()
 clean_user_data_df = clean.clean_user_data(user_data_df)
 
-engine = source_connector.init_db_engine() 
-destination_connector.upload_to_db(clean_user_data_df, 'dim_users', engine)
+creds = destination_db_uri
+
+destination_connector.upload_to_db(creds, clean_user_data_df, 'dim_users')
