@@ -4,6 +4,8 @@ import tabula
 import psycopg2
 from sqlalchemy import create_engine
 import requests
+import json
+import boto3
 
 class DataExtractor():
      
@@ -17,18 +19,29 @@ class DataExtractor():
          df_pdf = tabula.read_pdf(pdf_link, pages='all', multiple_tables=True)
          return pd.concat(df_pdf, ignore_index=True)
      
-     def list_number_of_stores(self, header_details, number_stores_endpoint):
-         header_details = {'x-api-key':'yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX'}
-         number_stores_endpoint = 'https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/number_stores'
-         stores_list = requests.get(number_stores_endpoint, headers=header_details)
-         number_stores = stores_list.json()
+     def list_number_of_stores(self, number_store_endpoint, key):
+         response = requests.get(number_store_endpoint,headers=key)
+         info = response.text
+         info_json = json.loads(info)
+         number_stores = info_json['number_stores']
          return number_stores
+    
+     def retrieve_stores_data(self,retrieve_store_endpoint, number_stores, key):
+         store_data = []
+         for i in range(number_stores):
+             response = requests.get(f"{retrieve_store_endpoint}{i}", headers=key)
+             info = response.text
+             info_json = json.loads(info)
+             store_data.append(info_json)
 
-     def retrieve_stores_data(self):
-         number_stores = self.list_number_of_stores()
-         header_details = {'x-api-key':'yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX'}
-         store_details_endpoint = 'https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/'
-         stores_list = []
-         for store_number in range(0, number_stores):
-             stores_list.append(requests.get(store_details_endpoint+str(store_number), headers=header_details).json())
-         return pd.json_normalize(stores_list)
+         stores_df = pd.DataFrame(store_data)
+         return stores_df
+     
+     def extract_from_s3(self, s3_address):
+         s3 = boto3.client('s3')
+         s3_bucket = 'data-handling-public'
+         object = 'products.csv'
+         file = 'products.csv'
+         s3.download_file(s3_bucket,object,file)
+         products_df = pd.read_csv('./products.csv')
+         return products_df 

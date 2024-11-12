@@ -52,3 +52,31 @@ card_data = source_extractor.retrieve_pdf_data(pdf_link)
 clean_card_data_df = clean.clean_card_data(card_data)
 
 destination_connector.upload_to_db(creds, clean_card_data_df, 'dim_card_details')
+
+number_store_endpoint = 'https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/number_stores'
+retrieve_store_endpoint = 'https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/'
+api_key = {'x-api-key': 'yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX'}
+
+number_stores = source_extractor.list_number_of_stores(number_store_endpoint, api_key)
+
+store_data = source_extractor.retrieve_stores_data(retrieve_store_endpoint, number_stores, api_key)
+
+clean_store_data = clean.clean_store_data(store_data)
+
+destination_connector.upload_to_db(creds, clean_store_data, 'dim_store_details')
+
+s3_address = 's3://data-handling-public/products.csv'
+
+products_df = source_extractor.extract_from_s3(s3_address)
+
+clean_products_df = clean.convert_product_weights(products_df)
+
+clean_products_df = clean.clean_products_data(clean_products_df)
+
+destination_connector.upload_to_db(creds, clean_products_df, 'dim_products')
+
+table_names_list = source_connector.list_db_tables(source_db_connection)
+print(table_names_list)
+
+orders_table_name = source_connector.list_db_tables(source_db_connection)[3]
+print(orders_table_name)
