@@ -45,3 +45,12 @@ class DataExtractor():
          s3.download_file(s3_bucket,object,file)
          products_df = pd.read_csv('./products.csv')
          return products_df 
+     
+     def extract_from_s3_json(self, s3_link):
+         s3 = boto3.client('s3')
+         s3_bucket = 'data-handling-public'
+         object = 'date_details.json'
+         file = 'date_details.json'
+         s3.download_file(s3_bucket,object,file)
+         date_details_df = pd.read_json('./date_details.json')
+         return date_details_df 

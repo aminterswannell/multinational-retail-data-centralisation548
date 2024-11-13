@@ -64,5 +64,27 @@ class DataCleaning():
          return product_weight
      
      def  clean_products_data(self, products_df):
-         
+         products_df=self.convert_product_weights(products_df)
+         products_df.dropna(subset=['uuid', 'product_code'], inplace=True)
+         products_df['date_added']=pd.to_datetime(products_df['date_added'], format='%Y-%m-%d', errors='coerce')
+        
          return products_df
+         
+     def clean_orders_data(self, orders_table):
+         
+         orders_table.drop(columns='first_name',axis=1,inplace=True)
+         orders_table.drop(columns='last_name',axis=1,inplace=True)
+         orders_table.drop(columns='1',axis=1,inplace=True)
+         orders_table.drop(columns='level_0',axis=1,inplace=True)
+         orders_table.drop(orders_table.columns[0],axis=1,inplace=True)
+          
+         return orders_table 
+     
+     def clean_date_times(self, date_details_df):
+        date_details_df['day'] = pd.to_numeric(date_details_df['day'], errors='coerce')
+        date_details_df.dropna(subset=['day', 'year', 'month'], inplace=True)
+        date_details_df['timestamp'] = pd.to_datetime(date_details_df['timestamp'], format='%H:%M:%S', errors='coerce')
+
+        return date_details_df
+
+

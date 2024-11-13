@@ -80,3 +80,18 @@ print(table_names_list)
 
 orders_table_name = source_connector.list_db_tables(source_db_connection)[3]
 print(orders_table_name)
+
+orders_data = source_extractor.read_rds_table(orders_table_name, source_db_connection)
+
+clean_orders_data = clean.clean_orders_data(orders_data)
+
+destination_connector.upload_to_db(creds, clean_orders_data, 'orders_table')
+
+s3_link = 'https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json'
+
+date_details = source_extractor.extract_from_s3_json(s3_link)
+
+clean_date_details = clean.clean_date_times(date_details)
+
+destination_connector.upload_to_db(creds, clean_date_details, 'dim_date_times')
+
