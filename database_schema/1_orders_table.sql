@@ -15,11 +15,11 @@
 -- Finding max lengths of selected variables.
 
 SELECT 
-    MAX(LENGTH(card_number)) AS max_length_card_number,
-    MAX(LENGTH(store_code)) AS max_length_store_code,
-    MAX(LENGTH(product_code)) AS max_length_product_code
-    
-FROM orders_table;
+    MAX(LENGTH(CAST(card_number AS VARCHAR))) AS max_card_number_length,
+    MAX(LENGTH(CAST(store_code AS VARCHAR))) AS max_store_code_length,
+    MAX(LENGTH(CAST(product_code AS VARCHAR))) AS max_product_code_length
+FROM 
+    orders_table;
 
 -- max_length_card_number is 19
 -- max_length_store_code is 12

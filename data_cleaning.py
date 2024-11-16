@@ -3,6 +3,7 @@ import pandas as pd
 from data_extraction import DataExtractor as de
 from database_utils import DatabaseConnector as dc
 import tabula
+import re 
 
 creds = dc('db_creds.yaml').read_db_creds()
 engine = dc('db_creds.yaml').init_db_engine(creds)
@@ -78,31 +79,30 @@ class DataCleaning():
  
          return store_data
      
-     def convert_product_weights(self,product_weight):
-         """
-         Converts product weights to correct format.
+     def convert_product_weights(self, products_df):
+        """
+        Convert product weights to kilograms.
 
-         Args:
-             product_weight (pd.DataFrame): DataFrame containing product weights.
+        Args:
+        - products_df (pd.DataFrame): The DataFrame containing product data.
 
-         Returns:
-             pd.DataFrame: DataFrame containing products weight in correct format.
-         """
-        
-         if 'kg' in product_weight:
-             product_weight = product_weight.replace('kg','')
-             product_weight = float(product_weight)
-         elif 'ml' in product_weight:
-             product_weight = product_weight.replace('ml','')
-             product_weight = float(product_weight) / 1000
-         elif 'g' in product_weight:
-             product_weight = product_weight.replace('g','')
-             product_weight = float(product_weight) / 1000
-         elif 'oz' in product_weight:
-             product_weight = product_weight.replace('oz','')
-             product_weight = float(product_weight) * 0.0283495
-        
-         return product_weight
+        Returns:
+        - pd.DataFrame: The DataFrame with weights converted to kilograms.
+        """
+        def convert_to_kg(weight_str):
+            try:
+                if isinstance(weight_str, str):
+                    value, unit = re.match(r'(\d+\.?\d*)\s*([a-zA-Z]+)', weight_str).groups()
+                    if unit.lower() == 'g':
+                        return float(value) / 1000
+                    elif unit.lower() == 'ml':
+                        return float(value) / 1000
+                    else:
+                        return float(value)
+            except (AttributeError, ValueError):
+                return None
+        products_df['weight_kg'] = products_df['weight'].apply(convert_to_kg)
+        return products_df
      
      def  clean_products_data(self, products_df):
          """

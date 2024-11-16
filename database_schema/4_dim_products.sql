@@ -19,10 +19,10 @@ ADD COLUMN weight_class VARCHAR(14);
 
 UPDATE dim_products
 SET weight_class = CASE
-        WHEN weight < 2.0 THEN 'Light'
-        WHEN weight >= 2.0 AND weight < 40.0 THEN 'Mid_Sized'
-        WHEN weight >= 40.0 AND weight < 140 THEN 'Heavy'
-        WHEN weight >= 140.0 THEN 'Truck_Required'
+        WHEN weight_kg < 2.0 THEN 'Light'
+        WHEN weight_kg >= 2.0 AND weight_kg < 40.0 THEN 'Mid_Sized'
+        WHEN weight_kg >= 40.0 AND weight_kg < 140 THEN 'Heavy'
+        WHEN weight_kg >= 140.0 THEN 'Truck_Required'
 END;
 
 -- Renaming removed column to still_available and changing data types of table to those shown below
@@ -59,7 +59,7 @@ FROM dim_products;
 
 ALTER TABLE dim_products
     ALTER COLUMN product_price TYPE FLOAT USING CAST(product_price AS FLOAT),
-    ALTER COLUMN weight TYPE FLOAT USING CAST(weight AS FLOAT),
+    ALTER COLUMN weight_kg TYPE FLOAT USING CAST(weight_kg AS FLOAT),
     ALTER COLUMN "EAN" TYPE VARCHAR(17),
     ALTER COLUMN product_code TYPE VARCHAR(11),
     ALTER COLUMN date_added TYPE DATE USING CAST(date_added AS DATE),
