@@ -1,4 +1,4 @@
-# Multi-national Retail Data Centralisation Project
+# Multinational Retail Data Centralisation Project
 
 ## Contents:
 - Project Description
