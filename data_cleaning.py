@@ -152,8 +152,8 @@ class DataCleaning():
 
          date_details_df['day'] = pd.to_numeric(date_details_df['day'], errors='coerce')
          date_details_df.dropna(subset=['day', 'year', 'month'], inplace=True)
-         date_details_df['timestamp'] = pd.to_datetime(date_details_df['timestamp'], format='%H:%M:%S', errors='coerce')
-
+         # date_details_df['timestamp'] = pd.to_datetime(date_details_df['timestamp'], format='%H:%M:%S', errors='coerce')
+         # The line above was included in code used for upload but caused the timestamp to come through in the wrong format so shouldn't be used.
          return date_details_df
 
 
