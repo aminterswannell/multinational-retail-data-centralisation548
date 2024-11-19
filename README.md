@@ -19,7 +19,7 @@ You will then query the database to get up-to-date metrics for the business.
 By extracting and cleaning the data from the variety of sources so that it was in a more uniform format, it was possible to then centralise this data by uploading it to a local database where they could be queried in SQL.
 This was achieved through the creation of three Python classes to perform the necessary extraction, manipulation and uploading of the data, these were utilised through importing to a main document and calling where necessary.
 ### What I learned:
-
+Looking back at how I completed the project, I would have added more print() statements after adding new lines of code, to check what the output actually was, especially when running into errors. I would also check more thoroughly that in the process of cleaning the data, I was not inadvertently causing issues with formatting that I would run into later down the line when running SQL queries as I had in Task 9 of Milestone 4. 
 ## Installation Instructions
 1. Clone the repository 
 2. Installed required packages
