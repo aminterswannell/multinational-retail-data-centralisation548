@@ -5,6 +5,7 @@ import pandas as pd
 import yaml
 import psycopg2
 
+
 if __name__ == "__main__":
 
     """
@@ -14,6 +15,7 @@ if __name__ == "__main__":
     # Creating connections to RDS and local database using methods from database_utils.
     source_connector = dc('db_creds.yaml')
     destination_connector = dc('sales_data_db_creds.yaml')
+    api_connector = dc('api_key.yaml')
 
     source_creds = source_connector.read_db_creds()
     destination_creds = destination_connector.read_db_creds()
@@ -65,7 +67,7 @@ if __name__ == "__main__":
     ## 3 - Cleaning and uploading store data from RDS using API key to local database.
     number_store_endpoint = 'https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/number_stores'
     retrieve_store_endpoint = 'https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/'
-    api_key = {'x-api-key': 'yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX'}
+    api_key = api_connector.read_db_creds()
 
     number_stores = source_extractor.list_number_of_stores(number_store_endpoint, api_key)
 

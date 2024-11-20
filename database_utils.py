@@ -79,3 +79,6 @@ class DatabaseConnector():
          df.to_sql(table_name, local_engine, if_exists='replace')
 
 
+
+
+
